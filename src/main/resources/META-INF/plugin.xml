@@ -1,0 +1,58 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
+    <id>hsb.idea.tool.idea-tools</id>
+
+    <!-- Public plugin name should be written in Title Case.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
+    <name>My-Tools</name>
+
+    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
+    <vendor email="670693754@qq.com" url="https://www.yourcompany.com">无</vendor>
+
+    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
+         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
+         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
+    <description><![CDATA[
+          class跳转
+          Features:
+       <ul>
+          <li>根据规则从controller service serviceImpl mapper中提取entity</li>
+          <li>根据entity找到controller service serviceImpl mapper四个类，实现相互跳转</li>
+          <li>快捷键 alt z</li>
+      </ul>
+      ]]></description>
+
+    <!-- Product and plugin compatibility requirements.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+    <!-- Extension points defined by the plugin.
+         Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
+    <extensions defaultExtensionNs="com.intellij">
+
+        <applicationService
+                serviceImplementation="hsb.idea.tool.ideatools.service.ListenerService"/>
+
+
+        <projectService id="baomidou.SpringMvcService" serviceImplementation="hsb.idea.tool.ideatools.service.GotoService"/>
+
+        <projectConfigurable instance="hsb.idea.tool.ideatools.setting.GotoSettingsConfigurable"
+                             id="hsb.idea.tool.ideatools.setting.GotoSettingsConfigurable"
+                             nonDefaultProject="true"
+                             displayName="跳转配置"/>
+
+        <projectService serviceImplementation="hsb.idea.tool.ideatools.setting.GotoSettingsState"/>
+    </extensions>
+
+    <actions>
+        <action id="SpringMvcGoTo" class="hsb.idea.tool.ideatools.action.GotoAction" text="GOTO"
+                description="SpringMvcGoTo">
+            <keyboard-shortcut keymap="$default" first-keystroke="alt Z"/>
+        </action>
+        <action id="backgroud-httplisten" class="hsb.idea.tool.ideatools.action.HttpNavigationListener"
+                text="HttpNavigationListen" description="http监听跳转请求">
+            <add-to-group group-id="BackgroundTasks" anchor="first"/>
+        </action>
+    </actions>
+</idea-plugin>
