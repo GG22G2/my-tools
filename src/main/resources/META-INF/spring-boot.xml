@@ -3,8 +3,6 @@
 <!--        <run.endpoint implementation="hsb.idea.tool.ideatools.endpoint.MyEndpoint"-->
 <!--                                  id="mappings2" order="after health"/>-->
 
-        <run.applicationUrlPathProviderFactory
-                implementation="hsb.idea.tool.ideatools.endpoint.MyEndpoint"/>
 
 
     </extensions>
