@@ -5,6 +5,8 @@ import com.intellij.ide.ui.search.SearchUtil;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
@@ -31,6 +33,7 @@ import com.intellij.psi.util.PsiUtil;
 import com.intellij.spring.model.utils.AntPathMatcher;
 import com.intellij.util.Processor;
 import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
@@ -39,6 +42,7 @@ import org.jetbrains.annotations.Nullable;
 import sun.awt.windows.WComponentPeer;
 
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -260,6 +264,8 @@ public class HttpNavigationListener extends AnAction {
             showWindow(hWnd);
         }
         NavigationUtil.activateFileWithPsiElement(element);
+
+        NavigationUtil.activateFileWithPsiElement(element);
     }
 
     private void initListener() {
@@ -361,15 +367,29 @@ public class HttpNavigationListener extends AnAction {
                 user32.ShowWindow(hWnd, User32.SW_SHOWNOACTIVATE);
             }else {
                 //最大化或者正常状态，不改变大小，只展示
-                user32.ShowWindow(hWnd, User32.SW_SHOWNA);
+                user32.ShowWindow(hWnd, User32.SW_SHOW);
             }
+            WinDef.HWND hForeWnd = user32.GetForegroundWindow();
+            int dwForeID = user32.GetWindowThreadProcessId(hForeWnd, null);
+            int dwCurID = Kernel32.INSTANCE.GetCurrentThreadId();
+
+            /**
+             * 关于调用AttachThreadInput
+             *
+             * 这个主要是为了让idea获得焦点吧？(不确定，但实现了效果)
+             * 如果不用这个，那么虽然能窗口展示出来了，但直接用tab+alt不能切回webstorm，需要点击一下才能
+             *
+             * */
+            user32.AttachThreadInput(new WinDef.DWORD(dwForeID),new WinDef.DWORD(dwCurID),true);
+
             //这三种方式都是展示窗口，怕万一某种方式失败，所以三种都用上
             user32.SetWindowPos(hWnd, new WinDef.HWND(new Pointer(-1)), 0, 0, 0, 0
                     , User32.SWP_NOSIZE | User32.SWP_NOMOVE);
             user32.SetWindowPos(hWnd, new WinDef.HWND(new Pointer(-2)), 0, 0, 0, 0
                     , User32.SWP_NOSIZE | User32.SWP_NOMOVE);
             user32.SetForegroundWindow(hWnd);
-            //user32.SetFocus(hWnd);
+
+            user32.AttachThreadInput(new WinDef.DWORD(dwForeID),new WinDef.DWORD(dwCurID),false);
         }
     }
 

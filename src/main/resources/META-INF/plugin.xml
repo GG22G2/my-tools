@@ -62,7 +62,8 @@
         </action>
         <action id="backgroud-httplisten" class="hsb.idea.tool.ideatools.action.HttpNavigationListener"
                 text="HttpNavigationListen" description="http监听跳转请求">
-            <add-to-group group-id="BackgroundTasks" anchor="first"/>
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
         </action>
+
     </actions>
 </idea-plugin>
