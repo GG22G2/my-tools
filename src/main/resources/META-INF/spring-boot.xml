@@ -1,0 +1,12 @@
+<idea-plugin>
+    <extensions defaultExtensionNs="com.intellij.spring.boot">
+<!--        <run.endpoint implementation="hsb.idea.tool.ideatools.endpoint.MyEndpoint"-->
+<!--                                  id="mappings2" order="after health"/>-->
+
+        <run.applicationUrlPathProviderFactory
+                implementation="hsb.idea.tool.ideatools.endpoint.MyEndpoint"/>
+
+
+    </extensions>
+
+</idea-plugin>
